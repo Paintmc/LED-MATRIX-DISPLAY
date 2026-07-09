@@ -3,6 +3,7 @@
 #include "Adafruit_GFX.h"
 #include "ESP32-HUB75-MatrixPanel-I2S-DMA.h"
 
+
 // Pin Mapping
 
 #define R1_PIN 25 
@@ -16,51 +17,58 @@
 #define C_PIN 5 
 #define D_PIN 17 
 #define E_PIN 33   
-#define LAT_PIN 4 
-#define OE_PIN 15 
-#define CLK_PIN 16 
+#define LAT_PIN 15 
+#define OE_PIN 16 
+#define CLK_PIN 4
 
 // Config Object
-HUB75_I2S_CFG mxconfig;
+HUB75_I2S_CFG::i2s_pins defined_pins = { R1_PIN, G1_PIN, B1_PIN, R2_PIN, G2_PIN, B2_PIN, A_PIN, B_PIN, C_PIN, D_PIN, E_PIN, LAT_PIN, OE_PIN, CLK_PIN };
+HUB75_I2S_CFG mxconfig(
+  64,    // Matrix width
+  64,    // Matrix height
+  1,     // chain length
+  defined_pins  // pin mapping
+);
+
+
+
 
 // Matrix Object
 MatrixPanel_I2S_DMA *dma_display = nullptr;
 
 void setup() {
+    Serial.begin(115200);
     
-    // Assigning attributes of mxconfig
-    mxconfig.mx_width = 64;
-    mxconfig.mx_height = 64;
-    mxconfig.gpio.r1 = R1_PIN;
-    mxconfig.gpio.g1 = G1_PIN;
-    mxconfig.gpio.b1 = B1_PIN;
-    mxconfig.gpio.r2 = R2_PIN;
-    mxconfig.gpio.g2 = G2_PIN;
-    mxconfig.gpio.b2 = B2_PIN;
-    mxconfig.gpio.a = A_PIN;
-    mxconfig.gpio.b = B_PIN;
-    mxconfig.gpio.c = C_PIN;
-    mxconfig.gpio.d = D_PIN;
-    mxconfig.gpio.e = E_PIN;
-    mxconfig.gpio.lat = LAT_PIN;
-    mxconfig.gpio.oe = OE_PIN;
-    mxconfig.gpio.clk = CLK_PIN;
-    mxconfig.chain_length = 1; 
+
+    mxconfig.driver = HUB75_I2S_CFG::FM6124; //For my specific Panel
+    mxconfig.clkphase = false;
+    mxconfig.latch_blanking = 4;
 
     dma_display = new MatrixPanel_I2S_DMA(mxconfig);
 
     dma_display->begin();
-    dma_display->setBrightness(100);
+    dma_display->clearScreen();
     
+    
+    dma_display->setBrightness(155);
 
-
-
+    dma_display->setCursor(10,15);
+    dma_display->setTextSize(1);
+    dma_display->setTextColor(0xFFFF);
+    dma_display->print("WHITE");
+    dma_display->setTextColor(0x1811);
+    dma_display->setCursor(10,22);
+    dma_display->print("TIGER");
+    
 }
 
-// 
+
+
 
 void loop() {
   
-    dma_display->fillScreen(0x0000);
+    
+    
 
 }
+
