@@ -3,7 +3,8 @@
 #include "Adafruit_GFX.h"
 #include "ESP32-HUB75-MatrixPanel-I2S-DMA.h"
 #include <array>
-
+#include "LittleFS.h"
+#include "AnimatedGIF.h"
 
 // Pin Mapping
 
