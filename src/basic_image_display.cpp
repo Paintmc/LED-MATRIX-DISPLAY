@@ -2,6 +2,7 @@
 #include <Arduino.h>
 #include "Adafruit_GFX.h"
 #include "ESP32-HUB75-MatrixPanel-I2S-DMA.h"
+#include <array>
 
 
 // Pin Mapping
@@ -31,12 +32,29 @@ HUB75_I2S_CFG mxconfig(
 );
 
 
-
-
 // Matrix Object
 MatrixPanel_I2S_DMA *dma_display = nullptr;
 
+
+// Creating the draw function which will take an array of arrays of color values as input
+// and light up the corresponding LED's of the matrix
+
+void draw_animation(uint16_t (*animation)[64][64], int frame_count) {
+    // size of one frame is already known (64x64) <- must change if your panel is of different size
+    for (int f = 0; f < frame_count; f++) {
+      for (int y = 0; y < 64; y++) {
+        for (int x = 0; x < 64; x++) {
+
+          dma_display->drawPixel(x, y, animation[f][y][x]);
+        }
+      }
+      delay(33); // <-- delay frames if you wish (change 33 to a value that suits your use)
+    } 
+}
+
+
 void setup() {
+
     Serial.begin(115200);
     
 
@@ -49,26 +67,15 @@ void setup() {
     dma_display->begin();
     dma_display->clearScreen();
     
-    
+    //SET BRIGHTNESS:
     dma_display->setBrightness(155);
 
-    dma_display->setCursor(10,15);
-    dma_display->setTextSize(1);
-    dma_display->setTextColor(0xFFFF);
-    dma_display->print("WHITE");
-    dma_display->setTextColor(0x1811);
-    dma_display->setCursor(10,22);
-    dma_display->print("TIGER");
-    
 }
 
 
-
-
 void loop() {
-  
-    
-    
-
+  // if frame count == 1 dont keep looping so have an if that has no code in it
+  // or if you want gif to loop then put draw_animation in here
+  //draw_animation();
 }
 
